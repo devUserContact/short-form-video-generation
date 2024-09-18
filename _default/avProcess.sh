@@ -44,13 +44,13 @@ avProcess() {
     done
     ffmpeg -f concat -safe 0 -i videoList.txt -c copy "$videoFileName"
 
-    ls -1 | sed s/$videoFileName//g | sed s/$audioFileName//g > deleteList.txt && cat deleteList.txt | xargs rm
+    ls -1 | sed s/$videoFileName//g | sed s/$audioFileName//g >deleteList.txt && cat deleteList.txt | xargs rm
     rm videoList.txt
     ffmpeg -i "$videoFileName" -r 24 -c:v libx264 -x264opts keyint=2:min-keyint=2 -crf 19 -c:a copy -an "$videoBasename.mp4"
     mv "$videoBasename.mp4" ../01_conversion/
     echo "" echo "converted original video to .mp4" | lolcat
     echo ""
-    
+
     cd ../02_clip || return
     ffmpeg -i "../01_conversion/$videoBasename.mp4" -c copy -f segment -segment_time "$clipDuration" -reset_timestamps 1 -sc_threshold 0 -g "$clipDuration" -force_key_frames "expr:gte(t, n_forced * ${clipDuration})" %04d_"$videoBasename"_clip.mp4
     clips=$(\ls)
@@ -58,17 +58,17 @@ avProcess() {
     last_clip=$(echo "$clips" | tail -1)
     rm "$first_clip" "$last_clip"
     \ls *.mp4 >../03_clipStage/clipList.txt
-    
+
     cd ../03_clipStage || return
     numberOfClipsToOmit=$(($(cat clipList.txt | wc -l) - 14))
     echo "$numberOfClipsToOmit"
     sed '1d;$d' clipList.txt >clipStage.txt
-    
+
     for i in $(seq 1 "$first"); do
       shuf -n 14 clipStage.txt | sort -n >clipList_FINAL.txt
       cat clipList.txt | head -1 | cat - clipList_FINAL.txt >temp && mv temp clipList_FINAL.txt
       cat clipList.txt | tail -1 >>clipList_FINAL.txt
-    
+
       cd ../04_mod || return
       for clip in $(\cat ../03_clipStage/clipList_FINAL.txt); do
         cp ../02_clip/"$clip" .
@@ -85,21 +85,21 @@ avProcess() {
       cd ../03_clipStage || return
     done
     cd ../ || return
-    
+
     echo "video file basename is: ${videoBasename}"
     echo "audio bpm is: ${bpm}"
     echo "audio diration string is: ${audioDuration}"
     echo "audio diration is: ${audioDuration}"
     echo "audio diration seconds is: ${audioDurationSeconds} seconds"
     echo "clip duration is: ${clipDuration}"
-    
+
     exit
     ;;
   clean)
     clearDirectories
     exit
     ;;
-    
+
     #  offload)
     #    if [ -z "$first" ]; then
     #      first=$(\ls 00_original/*.mov | sed 's/\..*//')
@@ -112,8 +112,8 @@ avProcess() {
     #    exit
     #
     #    ;;
-      help)
-        echo "---avProcess---
+  help)
+    echo "---avProcess---
     
     Commands:
       clean
@@ -121,9 +121,9 @@ avProcess() {
       create
       help
     "
-        exit
-        ;;
-    
+    exit
+    ;;
+
     #;;
   esac
 }
