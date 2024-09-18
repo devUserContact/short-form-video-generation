@@ -38,7 +38,8 @@ avProcess() {
     echo "clip duration is: ${clipDuration}"
 
     cd 00_original || return
-    for i in $(\ls *.{mov,MOV}); do
+    mv *.mov *.MOV
+    for i in $(\ls *.MOV); do
       echo "file '$i'" >>videoList.txt
     done
     ffmpeg -f concat -safe 0 -i videoList.txt -c copy "$videoFileName"
@@ -111,18 +112,18 @@ avProcess() {
     #    exit
     #
     #    ;;
-    #  help)
-    #    echo "---avProcess---
-    #
-    #Commands:
-    #  clean
-    #  offload
-    #  create
-    #  help
-    #"
-    #    exit
-    #    ;;
-    #
+      help)
+        echo "---avProcess---
+    
+    Commands:
+      clean
+      offload
+      create
+      help
+    "
+        exit
+        ;;
+    
     #;;
   esac
 }
