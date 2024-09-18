@@ -100,18 +100,18 @@ avProcess() {
     exit
     ;;
 
-    #  offload)
-    #    if [ -z "$first" ]; then
-    #      first=$(\ls 00_original/*.mov | sed 's/\..*//')
-    #    fi
-    #    mkdir "${first}_proj"
-    #    cp -rv 00_original FINAL "${first}_proj"
-    #    mv "${first}_proj" ../_lib
-    #    clearDirectories
-    #    rm 00_original/*
-    #    exit
-    #
-    #    ;;
+  offload)
+    if [ -z "$first" ]; then
+      first=$(\ls 00_original/*.mov | sed 's/\..*//')
+    fi
+    mkdir "${first}_proj"
+    cp -rv 00_original FINAL "${first}_proj"
+    mv "${first}_proj" ../_lib
+    clearDirectories
+    rm 00_original/*
+    exit
+    ;;
+
   help)
     echo "---avProcess---
     
